@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dgut.mapper.QuestionCustomMapper" >
+  <resultMap id="QuestionCustomMap" type="com.dgut.bean.Question" >
+    <id column="qid" property="qid" jdbcType="BIGINT" />
+    <result column="course_id" property="courseId" jdbcType="BIGINT" />
+    <result column="questiontype_id" property="questiontypeId" jdbcType="BIGINT" />
+    <result column="question" property="question" jdbcType="VARCHAR" />
+    <result column="slelects" property="slelects" jdbcType="VARCHAR" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="analysis" property="analysis" jdbcType="VARCHAR" />
+    <result column="knowledge_id" property="knowledgeId" jdbcType="VARCHAR" />
+    <result column="image_path" property="imagePath" jdbcType="VARCHAR" />
+    <result column="difficulty" property="difficulty" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  	<result column="modify_date" property="modifyDate" jdbcType="TIMESTAMP" />
+  	
+  <association property="course" javaType="com.dgut.bean.Course">
+    <id column="course_id" property="courseId" jdbcType="BIGINT" />
+    <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+    <result column="information" property="information" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </association>
+  
+   <association property="questiontype" javaType="com.dgut.bean.Questiontype">
+    <id column="questiontype_id" property="questiontypeId" jdbcType="BIGINT" />
+    <result column="questiontype_name" property="questiontypeName" jdbcType="VARCHAR" />
+    <result column="options" property="options" jdbcType="INTEGER" />
+    <result column="multiple" property="multiple" jdbcType="INTEGER" />
+  </association> 
+  </resultMap>
+  <select id="findQuestions" resultMap="QuestionCustomMap">
+  	select 
+  	question.*,
+  	course.*,
+  	questiontype.*
+  	from questiontype,course,question 
+  	where 
+  	question.course_id=course.course_id and question.questiontype_id=questiontype.questiontype_id
+  </select>
+  
+  <select id="findQuestionLike"  resultMap="QuestionCustomMap">
+	select 
+  	question.*,
+  	course.*,
+  	questiontype.*
+  	from question,questiontype,course
+  	<where>
+  	question.course_id=course.course_id and question.questiontype_id=questiontype.questiontype_id
+  	<if test="start_time!=null and start_time!='' and end_time!=null and end_time!=''">
+  		and question.create_date BETWEEN #{start_time} AND #{end_time} 
+  	</if>
+  	<if test="question.qid!=null and question.qid!='' ">
+  		and question.qid = #{question.qid}
+  	</if>
+  	<if test="question.question!=null and question.question!='' ">
+  		and question.question like #{question.question}
+  	</if>
+  	<if test="question.questiontypeId!=null and question.questiontypeId!='' ">
+  		and question.questiontype_id = #{question.questiontypeId}
+  	</if>
+  	<if test="question.courseId!=null and question.courseId!='' ">
+  		and question.course_id = #{question.courseId}
+  	</if>
+  	<if test="question.difficulty!=null and question.difficulty!='' ">
+  		and question.difficulty like #{question.difficulty}
+  	</if>
+  	<if test="knowledge.size()!=null and knowledge.size()>0">
+  		
+  		<foreach collection="knowledge" index="index" item="item" >
+            and (question.knowledge_id LIKE CONCAT('%,',#{item},',%')
+            or  question.knowledge_id LIKE CONCAT(#{item},',%')
+            or	question.knowledge_id LIKE CONCAT('%,',#{item})
+            or  question.knowledge_id LIKE #{item})
+        </foreach>
+        
+        
+  	</if>
+  	</where>
+  </select>
+  
+  <select id="findKnowledge"  resultMap="QuestionCustomMap">
+	select 
+  	question.*,
+  	course.*,
+  	questiontype.*
+  	from question,questiontype,course
+  	<where>
+  	question.course_id=course.course_id and question.questiontype_id=questiontype.questiontype_id
+  	
+  	<if test="knowledgeId!=null and knowledgeId!=''">
+  		
+            and (question.knowledge_id LIKE CONCAT('%,',#{knowledgeId},',%')
+            or  question.knowledge_id LIKE CONCAT(#{knowledgeId},',%')
+            or	question.knowledge_id LIKE CONCAT('%,',#{knowledgeId})
+            or  question.knowledge_id LIKE #{knowledgeId})
+        
+        
+  	</if>
+  	</where>
+  </select>
+  
+    <select id="findQuestion"  resultMap="QuestionCustomMap">
+	select 
+  	question.*,
+  	course.*,
+  	questiontype.*
+  	from question,questiontype,course
+  	<where>
+  	question.course_id=course.course_id and question.questiontype_id=questiontype.questiontype_id
+  	
+  	<if test="qid!=null and qid!=''">
+            and question.qid=#{qid};
+  	</if>
+  	</where>
+  </select>
+  
+  <select id="extracting"  resultMap="QuestionCustomMap">
+	select 
+  	question.*,
+  	course.*,
+  	questiontype.*
+  	from question,questiontype,course
+  	<where>
+  	question.course_id=course.course_id and question.questiontype_id=questiontype.questiontype_id
+  	<if test="qtype!=null and qtype!='' ">
+  		and question.questiontype_id = #{qtype}
+  	</if>
+
+  	<if test="dif!=null and dif!='' ">
+  		and question.difficulty like #{dif}
+  	</if>
+  	<if test="knowledge.size()!=null and knowledge.size()>0">
+  		
+  		<foreach collection="knowledge" index="index" item="item" >
+            and (question.knowledge_id LIKE CONCAT('%,',#{item},',%')
+            or  question.knowledge_id LIKE CONCAT(#{item},',%')
+            or	question.knowledge_id LIKE CONCAT('%,',#{item})
+            or  question.knowledge_id LIKE #{item})
+        </foreach>
+        
+        
+  	</if>
+  	</where>
+  </select>
+</mapper>

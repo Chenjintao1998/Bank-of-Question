@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dgut.mapper.PaperCustomMapper" >
+  <resultMap id="PaperCustomMap" type="com.dgut.bean.Paper" >
+    <id column="paper_id" property="paperId" jdbcType="BIGINT" />
+    <result column="paper_name" property="paperName" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="knowledge_id" property="knowledgeId" jdbcType="VARCHAR" />
+    <result column="answerurl" property="answerurl" jdbcType="VARCHAR" />
+    <result column="paperurl" property="paperurl" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="years" property="years" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="CHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="founder" property="founder" jdbcType="VARCHAR" />
+  </resultMap>
+
+  
+  <select id="findPaperLike"  resultMap="PaperCustomMap">
+	select 
+  	paper.*
+  	from paper
+  	<where>
+  	<if test="start_time!=null and start_time!='' and end_time!=null and end_time!=''">
+  		and paper.create_date BETWEEN #{start_time} AND #{end_time} 
+  	</if>
+  	<if test="paper.paperId!=null and paper.paperId!='' ">
+  		and paper.paper_id = #{paper.paperId}
+  	</if>
+  	<if test="paper.founder!=null and paper.founder!='' ">
+  		and paper.founder like #{paper.founder}
+  	</if>
+  	<if test="paper.paperName!=null and paper.paperName!='' ">
+  		and paper.paper_name like #{paper.paperName}
+  	</if>
+  	<if test="knowledge.size()!=null and knowledge.size()>0">
+  		
+  		<foreach collection="knowledge" index="index" item="item" >
+            and (paper.knowledge_id LIKE CONCAT('%,',#{item},',%')
+            or  paper.knowledge_id LIKE CONCAT(#{item},',%')
+            or	paper.knowledge_id LIKE CONCAT('%,',#{item})
+            or  paper.knowledge_id LIKE #{item})
+        </foreach>
+        
+        
+  	</if>
+  	</where>
+  </select>
+    <insert id="addpaper" useGeneratedKeys="true" keyProperty="paperId" parameterType="com.dgut.bean.Paper" >
+  	insert into paper(knowledge_id,paper_name,remark,content,answerurl,paperurl,years,create_date,type,state,founder) values(#{knowledgeId},#{paperName},#{remark},#{content},#{answerurl},#{paperurl},#{years},#{createDate},#{type},#{state},#{founder})
+  </insert>
+ </mapper>

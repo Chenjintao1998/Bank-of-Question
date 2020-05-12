@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dgut.mapper.QuestiontypeMapper" >
+  <resultMap id="BaseResultMap" type="com.dgut.bean.Questiontype" >
+    <id column="questiontype_id" property="questiontypeId" jdbcType="BIGINT" />
+    <result column="questiontype_name" property="questiontypeName" jdbcType="VARCHAR" />
+    <result column="options" property="options" jdbcType="BIT" />
+    <result column="multiple" property="multiple" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    questiontype_id, questiontype_name, options, multiple
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.dgut.bean.QuestiontypeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from questiontype
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from questiontype
+    where questiontype_id = #{questiontypeId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from questiontype
+    where questiontype_id = #{questiontypeId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.dgut.bean.QuestiontypeExample" >
+    delete from questiontype
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.dgut.bean.Questiontype" >
+    insert into questiontype (questiontype_id, questiontype_name, 
+      options, multiple)
+    values (#{questiontypeId,jdbcType=BIGINT}, #{questiontypeName,jdbcType=VARCHAR}, 
+      #{options,jdbcType=BIT}, #{multiple,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dgut.bean.Questiontype" >
+    insert into questiontype
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="questiontypeId != null" >
+        questiontype_id,
+      </if>
+      <if test="questiontypeName != null" >
+        questiontype_name,
+      </if>
+      <if test="options != null" >
+        options,
+      </if>
+      <if test="multiple != null" >
+        multiple,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="questiontypeId != null" >
+        #{questiontypeId,jdbcType=BIGINT},
+      </if>
+      <if test="questiontypeName != null" >
+        #{questiontypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null" >
+        #{options,jdbcType=BIT},
+      </if>
+      <if test="multiple != null" >
+        #{multiple,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.dgut.bean.QuestiontypeExample" resultType="java.lang.Integer" >
+    select count(*) from questiontype
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update questiontype
+    <set >
+      <if test="record.questiontypeId != null" >
+        questiontype_id = #{record.questiontypeId,jdbcType=BIGINT},
+      </if>
+      <if test="record.questiontypeName != null" >
+        questiontype_name = #{record.questiontypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.options != null" >
+        options = #{record.options,jdbcType=BIT},
+      </if>
+      <if test="record.multiple != null" >
+        multiple = #{record.multiple,jdbcType=BIT},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update questiontype
+    set questiontype_id = #{record.questiontypeId,jdbcType=BIGINT},
+      questiontype_name = #{record.questiontypeName,jdbcType=VARCHAR},
+      options = #{record.options,jdbcType=BIT},
+      multiple = #{record.multiple,jdbcType=BIT}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dgut.bean.Questiontype" >
+    update questiontype
+    <set >
+      <if test="questiontypeName != null" >
+        questiontype_name = #{questiontypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="options != null" >
+        options = #{options,jdbcType=BIT},
+      </if>
+      <if test="multiple != null" >
+        multiple = #{multiple,jdbcType=BIT},
+      </if>
+    </set>
+    where questiontype_id = #{questiontypeId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dgut.bean.Questiontype" >
+    update questiontype
+    set questiontype_name = #{questiontypeName,jdbcType=VARCHAR},
+      options = #{options,jdbcType=BIT},
+      multiple = #{multiple,jdbcType=BIT}
+    where questiontype_id = #{questiontypeId,jdbcType=BIGINT}
+  </update>
+</mapper>
